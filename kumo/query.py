@@ -4,6 +4,7 @@ import psycopg2
 
 
 DBNAME = "kumo"
+DEFAULT_LIMIT = 100
 
 
 def jsonize(query_result):
@@ -36,13 +37,13 @@ def station(by_id):
                     {'station_id': by_id})
         return cur.fetchall()
 
-def countries(limit=100):
+def countries(limit=DEFAULT_LIMIT):
     cnx = psycopg2.connect("dbname={}".format(DBNAME))
     with cnx.cursor() as cur:
         cur.execute("SELECT DISTINCT country FROM stations ORDER BY country ASC LIMIT %s ;" % limit)
         return [x[0] for x in cur.fetchall()]
 
-def stations(limit=100):
+def stations(limit=DEFAULT_LIMIT):
     cnx = psycopg2.connect("dbname={}".format(DBNAME))
     with cnx.cursor() as cur:
         cur.execute("SELECT * FROM stations LIMIT %s;" % limit)
