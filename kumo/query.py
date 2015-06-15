@@ -26,6 +26,8 @@ def is_station_id(station_id):
         last_value = cur.fetchone()[0]
     return station_id <= last_value
 
+def is_country(country):
+    return country in countries()
 
 def station(by_id):
     cnx = psycopg2.connect("dbname={}".format(DBNAME))

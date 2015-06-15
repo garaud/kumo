@@ -53,7 +53,10 @@ class Countries(Resource):
 class Country(Resource):
     @api.doc(description="Get stations from a specific country")
     def get(self, name):
-        return jsonize(by_country(name))
+        stations = by_country(name)
+        if not stations:
+            api.abort(404, "Country {} not found".format(name))
+        return jsonize(stations)
 
 
 if __name__ == '__main__':
