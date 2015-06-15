@@ -12,7 +12,7 @@ api = Api(app)
 
 class Station(Resource):
     def get(self, station_id):
-        jsonize(station(station_id))
+        return jsonize(station(station_id))
 
 class Stations(Resource):
     def get(self):
