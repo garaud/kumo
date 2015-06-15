@@ -5,7 +5,8 @@ from collections import OrderedDict
 from flask import Flask, Blueprint, jsonify
 from flask.ext.restplus import Resource, fields, Api, apidoc
 
-from kumo.query import (station, stations, by_country, jsonize, countries)
+from kumo.query import (station, stations, by_country, jsonize, countries,
+                        is_station_id)
 
 app = Flask(__name__)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
@@ -21,6 +22,10 @@ def swagger_ui():
 app.register_blueprint(blueprint)
 app.register_blueprint(apidoc.apidoc)  # only needed for assets and templates
 
+def abort_if_not_station(station_id):
+    if not is_station_id(station_id):
+        api.abort(404, "Station ID {} not found".format(station_id))
+
 @ns_station.route('/')
 class Stations(Resource):
     @api.doc(description="Get all stations")
@@ -33,6 +38,7 @@ class Stations(Resource):
 class Station(Resource):
     @api.doc(description="Get station from ID")
     def get(self, station_id):
+        abort_if_not_station(station_id)
         return jsonize(station(station_id))
 
 @ns_country.route('/')

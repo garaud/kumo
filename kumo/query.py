@@ -19,6 +19,14 @@ def jsonize(query_result):
                     'height': height})
     return res
 
+def is_station_id(station_id):
+    cnx = psycopg2.connect("dbname={}".format(DBNAME))
+    with cnx.cursor() as cur:
+        cur.execute("SELECT last_value FROM stations_id_seq;")
+        last_value = cur.fetchone()[0]
+    return station_id <= last_value
+
+
 def station(by_id):
     cnx = psycopg2.connect("dbname={}".format(DBNAME))
     with cnx.cursor() as cur:
