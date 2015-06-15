@@ -21,6 +21,12 @@ def swagger_ui():
 app.register_blueprint(blueprint)
 app.register_blueprint(apidoc.apidoc)  # only needed for assets and templates
 
+@ns_station.route('/')
+class Stations(Resource):
+    @api.doc(description="Get all stations")
+    def get(self):
+        return jsonize(stations())
+
 @ns_station.route('/<int:station_id>')
 @api.doc(responses={404: "Station ID not found"},
          params={'station_id': "Station ID"})
@@ -28,12 +34,6 @@ class Station(Resource):
     @api.doc(description="Get station from ID")
     def get(self, station_id):
         return jsonize(station(station_id))
-
-@ns_station.route('/')
-class Stations(Resource):
-    @api.doc(description="Get all stations")
-    def get(self):
-        return jsonize(stations())
 
 @ns_country.route('/')
 class Countries(Resource):
