@@ -5,8 +5,8 @@ from collections import OrderedDict
 from flask import Flask, Blueprint, jsonify
 from flask.ext.restplus import Resource, fields, Api, apidoc
 
-from kumo.query import (station, stations, by_country, jsonize, countries,
-                        is_station_id)
+from kumo.query import (DEFAULT_LIMIT, station, stations, by_country, jsonize,
+                        countries, is_station_id)
 
 app = Flask(__name__)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
@@ -22,15 +22,20 @@ def swagger_ui():
 app.register_blueprint(blueprint)
 app.register_blueprint(apidoc.apidoc)  # only needed for assets and templates
 
+
+parser = api.parser()
+parser.add_argument('limit', type=int, required=False, help='Query limit')
+
 def abort_if_not_station(station_id):
     if not is_station_id(station_id):
         api.abort(404, "Station ID {} not found".format(station_id))
 
 @ns_station.route('/')
 class Stations(Resource):
-    @api.doc(description="Get all stations")
+    @api.doc(parser=parser, description="Get all stations")
     def get(self):
-        return jsonize(stations())
+        args = parser.parse_args()
+        return jsonize(stations(limit=args.get('limit', DEFAULT_LIMIT)))
 
 @ns_station.route('/<int:station_id>')
 @api.doc(responses={404: "Station ID not found"},
@@ -43,9 +48,10 @@ class Station(Resource):
 
 @ns_country.route('/')
 class Countries(Resource):
-    @api.doc(description="Get countries")
+    @api.doc(parser=parser, description="Get countries")
     def get(self):
-        return countries()
+        args = parser.parse_args()
+        return countries(limit=args.get('limit', DEFAULT_LIMIT))
 
 @ns_country.route('/<string:name>')
 @api.doc(responses={404: "Country not found"},
