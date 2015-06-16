@@ -24,7 +24,8 @@ app.register_blueprint(apidoc.apidoc)  # only needed for assets and templates
 
 
 parser = api.parser()
-parser.add_argument('limit', type=int, required=False, help='Query limit')
+parser.add_argument('limit', type=int, required=False, location='args',
+                    help='Query limit')
 
 def abort_if_not_station(station_id):
     if not is_station_id(station_id):
@@ -35,7 +36,9 @@ class Stations(Resource):
     @api.doc(parser=parser, description="Get all stations")
     def get(self):
         args = parser.parse_args()
-        return jsonize(stations(limit=args.get('limit', DEFAULT_LIMIT)))
+        limit = args['limit']
+        limit = limit if limit is not None else DEFAULT_LIMIT
+        return jsonize(stations(limit=limit))
 
 @ns_station.route('/<int:station_id>')
 @api.doc(responses={404: "Station ID not found"},
@@ -51,7 +54,9 @@ class Countries(Resource):
     @api.doc(parser=parser, description="Get countries")
     def get(self):
         args = parser.parse_args()
-        return countries(limit=args.get('limit', DEFAULT_LIMIT))
+        limit = args['limit']
+        limit = limit if limit is not None else DEFAULT_LIMIT
+        return countries(limit=limit)
 
 @ns_country.route('/<string:name>')
 @api.doc(responses={404: "Country not found"},
