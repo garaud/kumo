@@ -11,7 +11,7 @@ from kumo.query import (DEFAULT_LIMIT, station, stations, by_country, jsonize,
 app = Flask(__name__)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint, ui=False, title='Kumo',
-          description='Air quality measures stations')
+          description='API to request air quality measuring stations')
 ns_station = api.namespace('stations', description='Get stations from ID')
 ns_country = api.namespace('countries', description='Get stations from countries')
 
