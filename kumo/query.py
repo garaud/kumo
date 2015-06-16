@@ -20,6 +20,36 @@ def jsonize(query_result):
                     'height': height})
     return res
 
+def position_coordinate(pos):
+    """Get latitude & longitude
+    """
+    lat, lon = pos.strip('()').split(',')
+    return float(lat), float(lon)
+
+def to_geojson(query_result):
+    """Turn a SQL query result to a GeoJSONisable dict
+
+    http://geojson.org/geojson-spec.html
+    """
+    res = []
+    for station_id,name,country,species,pos,height in query_result:
+        lat, lon = position_coordinate(pos)
+        res.append({
+            "geometry": {
+                "coordinates": [lat,lon],
+                "type": "Point"
+            },
+            "properties": {
+                "country": country,
+                "height": height,
+                "id": station_id,
+                "name": name,
+                "species": species
+            },
+            "type": "Feature"})
+    return {'features': res}
+
+
 def is_station_id(station_id):
     cnx = psycopg2.connect("dbname={}".format(DBNAME))
     with cnx.cursor() as cur:
