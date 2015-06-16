@@ -25,3 +25,10 @@ def download_file(url):
 def extract_data(fname):
     zipf = zipfile.ZipFile(fname)
     zipf.extractall()
+
+def main(url):
+    fname = download_file(url)
+    extract_data(fname)
+
+if __name__ == '__main__':
+    main(DATA_URL)
