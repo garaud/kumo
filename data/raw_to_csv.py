@@ -39,10 +39,26 @@ def filter_column(df):
     df['type'] = df['type'].str.lower()
     return df
 
+def latlon_to_coordinate(df):
+    coords = []
+    for _,series in df[['lat', 'lon']].iterrows():
+        lat,lon = series['lat'], series['lon']
+        coords.append("({},{})".format(lat,lon))
+    return coords
+
 def main(fname):
     rawdf = read_data(fname)
     df = filter_column(rawdf)
+    # df['coordinate'] = latlon_to_coordinate(df)
+    # df.pop('lat')
+    # df.pop('lon')
+    df.sort_index(axis=1, inplace=True)
+    df.index.name = 'id'
+    # Some strange height value
+    mask = df['height'].isin([9999,-9999])
+    df['height'][mask] = 0
     df.to_csv('airbase.csv')
+    return df
 
 if __name__ == '__main__':
-    main(FNAME)
+    df = main(FNAME)
