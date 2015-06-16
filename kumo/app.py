@@ -22,23 +22,34 @@ def swagger_ui():
 app.register_blueprint(blueprint)
 app.register_blueprint(apidoc.apidoc)  # only needed for assets and templates
 
-
-parser = api.parser()
-parser.add_argument('limit', type=int, required=False, location='args',
-                    help='Query limit')
+# Query parameters parser for /stations
+stations_parser = api.parser()
+stations_parser.add_argument('limit', type=int, required=False, location='args',
+                             help='Query limit')
+stations_parser.add_argument('species', type=str, required=False, location='args',
+                             help='Specify a species')
+stations_parser.add_argument('country', type=str, required=False, location='args',
+                             help='Specify a country')
+# Query parameters parser for /countries
+countries_parser = api.parser()
+countries_parser.add_argument('limit', type=int, required=False, location='args',
+                              help='Query limit')
 
 def abort_if_not_station(station_id):
+    """Raise 404 if the station ID is not found.
+    """
     if not is_station_id(station_id):
         api.abort(404, "Station ID {} not found".format(station_id))
 
 @ns_station.route('/')
 class Stations(Resource):
-    @api.doc(parser=parser, description="Get all stations")
+    @api.doc(parser=stations_parser, description="Get all stations")
     def get(self):
-        args = parser.parse_args()
+        args = stations_parser.parse_args()
         limit = args['limit']
         limit = limit if limit is not None else DEFAULT_LIMIT
-        return jsonize(stations(limit=limit))
+        return jsonize(stations(limit=limit, country=args['country'],
+                                species=args['species']))
 
 @ns_station.route('/<int:station_id>')
 @api.doc(responses={404: "Station ID not found"},
@@ -51,9 +62,9 @@ class Station(Resource):
 
 @ns_country.route('/')
 class Countries(Resource):
-    @api.doc(parser=parser, description="Get countries")
+    @api.doc(parser=countries_parser, description="Get countries")
     def get(self):
-        args = parser.parse_args()
+        args = countries_parser.parse_args()
         limit = args['limit']
         limit = limit if limit is not None else DEFAULT_LIMIT
         return countries(limit=limit)
