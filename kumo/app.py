@@ -5,8 +5,8 @@ from collections import OrderedDict
 from flask import Flask, Blueprint, jsonify
 from flask.ext.restplus import Resource, fields, Api, apidoc
 
-from kumo.query import (DEFAULT_LIMIT, station, stations, by_country, jsonize,
-                        countries, is_station_id)
+from kumo.query import (DEFAULT_LIMIT, station, stations, by_country,
+                        to_geojson, jsonize, countries, is_station_id)
 
 app = Flask(__name__)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
@@ -48,8 +48,8 @@ class Stations(Resource):
         args = stations_parser.parse_args()
         limit = args['limit']
         limit = limit if limit is not None else DEFAULT_LIMIT
-        return jsonize(stations(limit=limit, country=args['country'],
-                                species=args['species']))
+        return to_geojson(stations(limit=limit, country=args['country'],
+                                   species=args['species']))
 
 @ns_station.route('/<int:station_id>')
 @api.doc(responses={404: "Station ID not found"},
