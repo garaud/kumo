@@ -55,3 +55,16 @@ def by_country(name):
         cur.execute("SELECT * FROM stations WHERE country = %(name)s",
                     {'name': name.capitalize()})
         return cur.fetchall()
+
+def species(limit=DEFAULT_LIMIT):
+    cnx = psycopg2.connect("dbname={}".format(DBNAME))
+    with cnx.cursor() as cur:
+        cur.execute("SELECT DISTINCT species FROM stations ORDER BY species ASC LIMIT %s ;" % limit)
+        return [x[0] for x in cur.fetchall()]
+
+def by_species(name):
+    cnx = psycopg2.connect("dbname={}".format(DBNAME))
+    with cnx.cursor() as cur:
+        cur.execute("SELECT * FROM stations WHERE species = %(name)s",
+                    {'name': name})
+        return cur.fetchall()
