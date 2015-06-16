@@ -37,17 +37,31 @@ def station(by_id):
                     {'station_id': by_id})
         return cur.fetchall()
 
+def stations(limit=DEFAULT_LIMIT, country=None, species=None):
+    cnx = psycopg2.connect("dbname={}".format(DBNAME))
+    query = ["SELECT * FROM stations"]
+    params = {}
+    if country is not None:
+        params['country'] = country
+        query.append(" country = %(country)s")
+    if species is not None:
+        params['species'] = species
+        query.append(" species  = %(species)s")
+    query_limit = " LIMIT %s" % limit
+    if len(query) > 1:
+        query = query[0] + ' WHERE ' + 'AND'.join(query[1:])
+    else:
+        query = query[0]
+    query += query_limit
+    with cnx.cursor() as cur:
+        cur.execute(query, params)
+        return cur.fetchall()
+
 def countries(limit=DEFAULT_LIMIT):
     cnx = psycopg2.connect("dbname={}".format(DBNAME))
     with cnx.cursor() as cur:
-        cur.execute("SELECT DISTINCT country FROM stations ORDER BY country ASC LIMIT %s ;" % limit)
+        cur.execute("SELECT DISTINCT country FROM stations ORDER BY country LIMIT %s;" % limit)
         return [x[0] for x in cur.fetchall()]
-
-def stations(limit=DEFAULT_LIMIT):
-    cnx = psycopg2.connect("dbname={}".format(DBNAME))
-    with cnx.cursor() as cur:
-        cur.execute("SELECT * FROM stations LIMIT %s;" % limit)
-        return cur.fetchall()
 
 def by_country(name):
     cnx = psycopg2.connect("dbname={}".format(DBNAME))
