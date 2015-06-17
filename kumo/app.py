@@ -34,6 +34,8 @@ stations_parser.add_argument('country', type=str, required=False, location='args
 countries_parser = api.parser()
 countries_parser.add_argument('limit', type=int, required=False, location='args',
                               help='Query limit')
+countries_parser.add_argument('type', type=str, required=False, location='args',
+                              help='Type of the station: background, traffic, industrial or unknown')
 
 def abort_if_not_station(station_id):
     """Raise 404 if the station ID is not found.
@@ -75,7 +77,8 @@ class Countries(Resource):
 class Country(Resource):
     @api.doc(description="Get stations from a specific country")
     def get(self, name):
-        stations = by_country(name)
+        args = countries_parser.parse_args()
+        stations = by_country(name, station_type=args['type'])
         if not stations:
             api.abort(404, "Country {} not found".format(name))
         return to_geojson(stations)
