@@ -78,7 +78,9 @@ class Country(Resource):
     @api.doc(description="Get stations from a specific country")
     def get(self, name):
         args = countries_parser.parse_args()
-        stations = by_country(name, station_type=args['type'])
+        limit = args['limit']
+        limit = limit if limit is not None else DEFAULT_LIMIT
+        stations = by_country(name, limit=limit, station_type=args['type'])
         if not stations:
             api.abort(404, "Country {} not found".format(name))
         return to_geojson(stations)

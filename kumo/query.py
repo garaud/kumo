@@ -74,13 +74,14 @@ def countries(limit=DEFAULT_LIMIT):
         cur.execute("SELECT DISTINCT country FROM stations ORDER BY country LIMIT %s;" % limit)
         return [x[0] for x in cur.fetchall()]
 
-def by_country(name, station_type=None):
+def by_country(name, limit=DEFAULT_LIMIT, station_type=None):
     cnx = psycopg2.connect("dbname={}".format(DBNAME))
     params = {'name': name.capitalize()}
     query = "SELECT * FROM stations WHERE country = %(name)s"
     if station_type is not None:
         params['type'] = station_type
         query += " AND type  = %(type)s"
+    query += " LIMIT %s" % limit
     with cnx.cursor() as cur:
         cur.execute(query, params)
         return cur.fetchall()
