@@ -6,7 +6,7 @@ from flask import Flask, Blueprint, jsonify
 from flask.ext.restplus import Resource, fields, Api, apidoc
 
 from kumo.query import (DEFAULT_LIMIT, station, stations, by_country,
-                        to_geojson, jsonize, countries, is_station_id)
+                        to_geojson, countries, is_station_id)
 
 app = Flask(__name__)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
@@ -26,8 +26,8 @@ app.register_blueprint(apidoc.apidoc)  # only needed for assets and templates
 stations_parser = api.parser()
 stations_parser.add_argument('limit', type=int, required=False, location='args',
                              help='Query limit')
-stations_parser.add_argument('species', type=str, required=False, location='args',
-                             help='Specify a species')
+stations_parser.add_argument('type', type=str, required=False, location='args',
+                             help='Type of the station: background, traffic, industrial or unknown')
 stations_parser.add_argument('country', type=str, required=False, location='args',
                              help='Specify a country')
 # Query parameters parser for /countries
@@ -49,7 +49,7 @@ class Stations(Resource):
         limit = args['limit']
         limit = limit if limit is not None else DEFAULT_LIMIT
         return to_geojson(stations(limit=limit, country=args['country'],
-                                   species=args['species']))
+                                   station_type=args['type']))
 
 @ns_station.route('/<int:station_id>')
 @api.doc(responses={404: "Station ID not found"},
@@ -58,7 +58,7 @@ class Station(Resource):
     @api.doc(description="Get station from ID")
     def get(self, station_id):
         abort_if_not_station(station_id)
-        return jsonize(station(station_id))
+        return to_geojson(station(station_id))
 
 @ns_country.route('/')
 class Countries(Resource):
@@ -78,7 +78,7 @@ class Country(Resource):
         stations = by_country(name)
         if not stations:
             api.abort(404, "Country {} not found".format(name))
-        return jsonize(stations)
+        return to_geojson(stations)
 
 
 if __name__ == '__main__':
