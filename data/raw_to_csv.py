@@ -56,7 +56,7 @@ def main(fname):
     df['height'][mask] = 0
     mask = df['type'].isnull()
     df['type'][mask] = 'unknown'
-    df.to_csv('airbase.csv')
+    df.to_csv('airbase.csv', index=False)
     return df
 
 if __name__ == '__main__':
