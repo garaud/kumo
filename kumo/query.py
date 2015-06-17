@@ -57,7 +57,7 @@ def stations(limit=DEFAULT_LIMIT, country=None, station_type=None):
         query.append(" country = %(country)s")
     if station_type is not None:
         params['type'] = station_type
-        query.append(" type  = %(species)s")
+        query.append(" type  = %(type)s")
     query_limit = " LIMIT %s" % limit
     if len(query) > 1:
         query = query[0] + ' WHERE ' + 'AND'.join(query[1:])
