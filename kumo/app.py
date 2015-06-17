@@ -27,15 +27,13 @@ stations_parser = api.parser()
 stations_parser.add_argument('limit', type=int, required=False, location='args',
                              help='Query limit')
 stations_parser.add_argument('type', type=str, required=False, location='args',
-                             help='Type of the station: background, traffic, industrial or unknown')
+                             help='Station type: background, traffic, industrial or unknown')
 stations_parser.add_argument('country', type=str, required=False, location='args',
                              help='Specify a country')
 # Query parameters parser for /countries
 countries_parser = api.parser()
 countries_parser.add_argument('limit', type=int, required=False, location='args',
                               help='Query limit')
-countries_parser.add_argument('type', type=str, required=False, location='args',
-                              help='Type of the station: background, traffic, industrial or unknown')
 
 def abort_if_not_station(station_id):
     """Raise 404 if the station ID is not found.
@@ -64,18 +62,21 @@ class Station(Resource):
 
 @ns_country.route('/')
 class Countries(Resource):
-    @api.doc(parser=countries_parser, description="Get countries")
+    @api.doc(parser=countries_parser, description="List of countries")
     def get(self):
         args = countries_parser.parse_args()
         limit = args['limit']
         limit = limit if limit is not None else DEFAULT_LIMIT
         return countries(limit=limit)
 
+countries_parser.add_argument('type', type=str, required=False, location='args',
+                              help='Station type: background, traffic, industrial or unknown')
+
 @ns_country.route('/<string:name>')
 @api.doc(responses={404: "Country not found"},
          params={'name': "Country"})
 class Country(Resource):
-    @api.doc(description="Get stations from a specific country")
+    @api.doc(parser=countries_parser, description="Get stations from a specific country")
     def get(self, name):
         args = countries_parser.parse_args()
         limit = args['limit']
