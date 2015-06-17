@@ -7,25 +7,6 @@ DBNAME = "kumo"
 DEFAULT_LIMIT = 100
 
 
-def jsonize(query_result):
-    """Turn a query result to a dict
-    """
-    res = []
-    for station_id,name,country,species,pos,height in query_result:
-        res.append({'id': station_id,
-                    'name': name,
-                    'country': country,
-                    'species': species,
-                    'pos': pos,
-                    'height': height})
-    return res
-
-def position_coordinate(pos):
-    """Get latitude & longitude
-    """
-    lat, lon = pos.strip('()').split(',')
-    return float(lat), float(lon)
-
 def to_geojson(query_result):
     """Turn a SQL query result to a GeoJSONisable dict
 
