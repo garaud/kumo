@@ -11,7 +11,7 @@ CREATE TABLE stations (
     type        VARCHAR (10)
 );
 
-COPY stations FROM './airbase.csv' DELIMITER ',' CSV HEADER;
+\copy stations FROM './airbase.csv' DELIMITER ',' CSV HEADER;
 -- CREATE EXTENSION postgis;
 -- SELECT AddGeometryColumn ('stations', 'coordinate', 4326, 'POINT', 2);
 -- SELECT ST_MakePoint(lat,lon) FROM stations;
