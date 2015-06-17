@@ -32,19 +32,19 @@ def to_geojson(query_result):
     http://geojson.org/geojson-spec.html
     """
     res = []
-    for station_id,name,country,species,pos,height in query_result:
-        lat, lon = position_coordinate(pos)
+    for station_id,code,country,height,lat,lon,name,station_type in query_result:
         res.append({
             "geometry": {
                 "coordinates": [lat,lon],
                 "type": "Point"
             },
             "properties": {
+                "code": code,
                 "country": country,
                 "height": height,
                 "id": station_id,
                 "name": name,
-                "species": species
+                "type": station_type
             },
             "type": "Feature"})
     return {'features': res}
@@ -67,16 +67,16 @@ def station(by_id):
                     {'station_id': by_id})
         return cur.fetchall()
 
-def stations(limit=DEFAULT_LIMIT, country=None, species=None):
+def stations(limit=DEFAULT_LIMIT, country=None, station_type=None):
     cnx = psycopg2.connect("dbname={}".format(DBNAME))
     query = ["SELECT * FROM stations"]
     params = {}
     if country is not None:
         params['country'] = country
         query.append(" country = %(country)s")
-    if species is not None:
-        params['species'] = species
-        query.append(" species  = %(species)s")
+    if station_type is not None:
+        params['type'] = station_type
+        query.append(" type  = %(species)s")
     query_limit = " LIMIT %s" % limit
     if len(query) > 1:
         query = query[0] + ' WHERE ' + 'AND'.join(query[1:])
