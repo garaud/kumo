@@ -28,7 +28,7 @@ def to_geojson(query_result):
                 "type": station_type
             },
             "type": "Feature"})
-    return {'features': res}
+    return {'features': res, "type": "FeatureCollection"}
 
 
 def is_station_id(station_id):
