@@ -5,8 +5,9 @@ from collections import OrderedDict
 from flask import Flask, Blueprint, jsonify
 from flask.ext.restplus import Resource, fields, Api, apidoc
 
-from kumo.query import (DEFAULT_LIMIT, station, stations, by_country,
-                        to_geojson, countries, is_station_id)
+from kumo import geojson
+from kumo.query import (DEFAULT_LIMIT, station, stations, by_country, countries,
+                        is_station_id)
 
 app = Flask(__name__)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
@@ -48,7 +49,7 @@ class Stations(Resource):
         args = stations_parser.parse_args()
         limit = args['limit']
         limit = limit if limit is not None else DEFAULT_LIMIT
-        return to_geojson(stations(limit=limit, country=args['country'],
+        return geojson(stations(limit=limit, country=args['country'],
                                    station_type=args['type']))
 
 @ns_station.route('/<int:station_id>')
@@ -58,7 +59,7 @@ class Station(Resource):
     @api.doc(description="Get station from ID")
     def get(self, station_id):
         abort_if_not_station(station_id)
-        return to_geojson(station(station_id))
+        return geojson(station(station_id))
 
 @ns_country.route('/')
 class Countries(Resource):
@@ -84,7 +85,7 @@ class Country(Resource):
         stations = by_country(name, limit=limit, station_type=args['type'])
         if not stations:
             api.abort(404, "Country {} not found".format(name))
-        return to_geojson(stations)
+        return geojson(stations)
 
 
 if __name__ == '__main__':
