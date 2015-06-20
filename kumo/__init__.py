@@ -13,7 +13,7 @@ def geojson(query_result):
     for station_id,code,country,height,lat,lon,name,station_type in query_result:
         res.append({
             "geometry": {
-                "coordinates": [lat,lon],
+                "coordinates": [lon,lat],
                 "type": "Point"
             },
             "properties": {
