@@ -50,10 +50,10 @@ Airbase CSV file.
 
 Simple queries:
 
-.. code-block: sql
+::
 
    SELECT name,code,type FROM stations LIMIT 20;
 
-.. code-block: sql
+::
 
    SELECT COUNT(name),type FROM station GROUP BY type;
