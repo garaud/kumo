@@ -7,3 +7,4 @@ Todo List
 * Start the UI project with ember
 * Take a look to JSON API, well integrated with Ember Data
   http://jsonapi.org/implementations/
+* Write a setup.py
