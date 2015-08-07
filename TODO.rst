@@ -3,6 +3,7 @@ Todo List
 =========
 
 * Try refactoring the module `query.py`.
-* Extract data from raw CSV Airbase file
-* Batch to populate the PostgreSQL base from the cleaned CSV file
+* Set the good PostGIS type for lat/lon columns
 * Start the UI project with ember
+* Take a look to JSON API, well integrated with Ember Data
+  http://jsonapi.org/implementations/
