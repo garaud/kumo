@@ -29,21 +29,12 @@ Take a look at the ``data`` folder:
 - ``get.py`` to download and extract the Airbase CSV file from the EEA website
 - ``raw_to_csv.py``: read the raw Airbase CSV file then extract, transform and
   clean some data
+- ``airbase.csv``: the *cleaned* data produced by the previous Python script
 
-**Kumo** decides to keep these data:
+Create the *kumo* **PostgreSQL** database and execute the ``data/airbase.sql``
+which just does a ``COPY...FROM`` the ``airbase.csv`` file.
 
-- code: the unique station code name
-- country: the country where the station is
-- height: altitude
-- lat: latitude
-- lon: longitude
-- name: station name
-- type: station type (background, industrial, traffic or unknown)
-
-Create the *kumo* PostgreSQL database and execute the ``data/airbase.sql`` which
-just does a ``COPY...FROM`` the ``airbase.csv`` file.
-
-There are **8626 stations**.
+Take a look to the ``data/README.rst`` to have more information about the data.
 
 
 Install

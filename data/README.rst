@@ -23,15 +23,15 @@ Then, launch the script ``raw_to_csv.py`` to extract some data from the raw
 Airbase CSV file. This create a ``airbase.csv`` file with some data that Kumo
 use.
 
-Kept data:
+The data in the *cleaned* CSV file:
 
-* ``code``: unique code station name
-* ``country``: the country
-* ``height``: the height (in meter)
+* ``code``: a unique code station name
+* ``country``: the country where the station is
+* ``height``: the altitude (in meter)
 * ``lat``: latitude
 * ``lon``: longitude
 * ``name``: station name
-* ``type``: station type (background, traffic, industrial)
+* ``type``: station type (background, traffic, industrial or unknown)
 
 
 Data in the Database
@@ -46,7 +46,7 @@ Create the database, ``kumo`` for instance, and then:
 in the ``psql`` prompt.
 
 It creates the table ``stations`` and carries out a ``COPY`` from the *cleaned*
-Airbase CSV file.
+Airbase CSV file. There are **8626 stations**.
 
 Simple queries:
 
