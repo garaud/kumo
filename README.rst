@@ -7,6 +7,8 @@ Kumo
 **Kumo** is a REST API application for requesting air quality stations data in
 Europe. Data are provided in a GeoJSON_ format.
 
+See an example at http://kumo.damiengaraud.org/api/doc/
+
 Produce in Python with FlaskREST_ and PostgreSQL_.
 
 Clone this project with: ``git clone --recursive URL/kumo.git`` to also get the
