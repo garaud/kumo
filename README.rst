@@ -17,7 +17,7 @@ kumo-ui_ repo as a submodule.
 .. _GeoJSON: http://geojson.org/
 .. _FlaskREST: https://flask-restful.readthedocs.org/en/0.3.3/
 .. _PostgreSQL: http://www.postgresql.org/
-.. _kumo-ui: https://gitlab.com/garaud/kumo-ui
+.. _kumo-ui: https://github.com/garaud/kumo-ui
 
 Data
 ----
