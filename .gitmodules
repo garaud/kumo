@@ -1,3 +1,4 @@
 [submodule "kumo-ui"]
 	path = kumo-ui
-	url = https://gitlab.com/garaud/kumo-ui.git
+	url = https://github.com/garaud/kumo-ui
+
