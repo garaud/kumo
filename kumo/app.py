@@ -10,6 +10,7 @@ from kumo.query import (DEFAULT_LIMIT, station, stations, by_country, countries,
                         is_station_id)
 
 app = Flask(__name__)
+app.config.SWAGGER_UI_DOC_EXPANSION = 'list'
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint, ui=False, title='Kumo',
           description='API to request air quality measuring stations')
