@@ -3,3 +3,5 @@ flask-restful
 flask-restplus
 requests
 psycopg2
+rcssmin
+rjsmin
