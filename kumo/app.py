@@ -2,20 +2,39 @@
 
 from collections import OrderedDict
 
-from flask import Flask, Blueprint, jsonify
+from flask import Flask, Blueprint, jsonify, render_template
 from flask.ext.restplus import Resource, fields, Api, apidoc
+from flask.ext.assets import Environment, Bundle
+from rcssmin import cssmin
 
 from kumo import geojson
 from kumo.query import (DEFAULT_LIMIT, station, stations, by_country, countries,
                         is_station_id)
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='assets')
 app.config.SWAGGER_UI_DOC_EXPANSION = 'list'
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint, ui=False, title='Kumo',
           description='API to request air quality measuring stations')
 ns_station = api.namespace('stations', description='Get stations from ID')
 ns_country = api.namespace('countries', description='Get stations from countries')
+
+
+js_assets = (
+    'bower/jquery/dist/jquery.js',
+    'bower/bootstrap/dist/js/bootstrap.js',
+    'bower/leaflet/dist/leaflet.js',
+    'bower/leaflet-filelayer/leaflet.filelayer.js',
+    'js/main.js',
+)
+
+css_assets = (
+    'bower/bootstrap/dist/css/bootstrap.min.css',
+    'bower/fontawesome/css/font-awesome.min.css',
+    'bower/leaflet/dist/leaflet.css',
+    'css/main.css',
+)
+
 
 @blueprint.route('/doc/', endpoint='doc')
 def swagger_ui():
@@ -36,6 +55,34 @@ stations_parser.add_argument('country', type=str, required=False, location='args
 countries_parser = api.parser()
 countries_parser.add_argument('limit', type=int, required=False, location='args',
                               help='Query limit')
+
+
+def custom_cssmin(_in, out, **kw):
+    out.write(cssmin(_in.read()))
+
+def build_assets(app):
+    """
+    build assets with webassets
+    """
+    js = Bundle(
+        *js_assets,
+        filters='rjsmin',
+        output='gen/packed.js'
+    )
+
+    css = Bundle(
+        *css_assets,
+        filters=(custom_cssmin, 'cssrewrite'),
+        output='gen/packed.css'
+    )
+
+    assets = Environment(app)
+    assets.debug = True
+    # FIXME
+    # assets.debug = True
+    assets.register('js_all', js)
+    assets.register('css_all', css)
+
 
 def abort_if_not_station(station_id):
     """Raise 404 if the station ID is not found.
@@ -88,6 +135,10 @@ class Country(Resource):
             api.abort(404, "Country {} not found".format(name))
         return geojson(stations)
 
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
+    build_assets(app)
     app.run(debug=True)
