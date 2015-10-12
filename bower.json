@@ -1,0 +1,22 @@
+{
+  "name": "kumo",
+  "version": "0.1.0",
+  "authors": [
+    "Damien Garaud"
+  ],
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "./assets/bower",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "latest",
+    "fontawesome": "latest",
+    "leaflet": "Leaflet/Leaflet#1.0.0-beta.1",
+    "leaflet-filelayer": "makinacorpus/Leaflet.FileLayer"
+  }
+}
